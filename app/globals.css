@@ -311,8 +311,8 @@ a.nav-item, a.primary-button { text-decoration: none; }
 .complete-handoff .helper, .helper.center { margin: 0; font-size: 14px; text-align: center; color: var(--ch-text-muted); }
 
 /* Keep content clear of the fixed bottom nav */
-.content.delivery-page { padding-bottom: calc(120px + env(safe-area-inset-bottom)); }
-.parking-link { width: 100%; background: transparent; border: 1px dashed var(--line-strong); border-radius: 14px; padding: 18px; display: flex; align-items: center; gap: 12px; color: var(--ink); font-weight: 600; }
+.app-shell { padding-bottom: calc(80px + env(safe-area-inset-bottom)); }   /* was 104px */
+.content.delivery-page { padding-bottom: calc(96px + env(safe-area-inset-bottom)); } /* was 120px */.parking-link { width: 100%; background: transparent; border: 1px dashed var(--line-strong); border-radius: 14px; padding: 18px; display: flex; align-items: center; gap: 12px; color: var(--ink); font-weight: 600; }
 .parking-link > svg:last-child { margin-left: auto; }
 
 /* Photo preview */

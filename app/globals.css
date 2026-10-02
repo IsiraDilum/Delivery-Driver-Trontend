@@ -54,15 +54,19 @@ h1, h2, h3, h4 { font-weight: 800; }
 button, input, select, textarea { font: inherit; color: inherit; }
 button { cursor: pointer; }
 a { color: inherit; }
+button, a { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+.primary-button, .quick-actions button, .icon-button, .nav-item { transition: transform .12s ease, background-color .2s ease; }
+.primary-button:not(:disabled):active, .quick-actions button:active, .icon-button:active, .nav-item:active { transform: scale(.96); }
 
 :focus-visible { outline: 3px solid var(--purple); outline-offset: 2px; }
 
 /* =========================================================
    APP SHELL (header + bottom nav container)
+   The driver app is phone-only: on larger screens it shows as a centered phone-width column.
    ========================================================= */
 .app-shell {
     width: 100%;
-    max-width: 920px;
+    max-width: 430px;
     min-height: 100vh;
     margin: 0 auto;
     background: var(--surface);
@@ -102,7 +106,25 @@ a { color: inherit; }
     grid-template-columns: repeat(4, 1fr);
     box-shadow: 0 14px 28px #1b332b25;
 }
+.nav-item {
+    border: 0;
+    background: transparent;
+    padding: 8px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: center;
+    color: var(--ink);
+    font-weight: 600;
+    font-size: 13px;
+    border-radius: 16px;
+}
+.nav-item.active { background: var(--purple); color: white; }
 a.nav-item, a.primary-button { text-decoration: none; }
+
+@media (min-width: 431px) {
+    .app-shell { box-shadow: 0 0 0 1px var(--line), 0 12px 48px rgba(0, 0, 0, .25); }
+}
 
 /* =========================================================
    SHARED CONTENT
@@ -193,13 +215,17 @@ a.nav-item, a.primary-button { text-decoration: none; }
 /* =========================================================
    ROUTE: NAVIGATION SCREEN  (app/route/map/page.tsx)
    ========================================================= */
-/* Fills the same column as the rest of the app (.app-shell), full height.
+/* Fills the same phone column as the rest of the app (.app-shell), full height.
    The map fills everything above the stop card; the header and bottom nav are hidden. */
 .app-shell.immersive { padding-bottom: 0; }
-.content.nav-page { position: fixed; inset: 0; z-index: 30; display: flex; flex-direction: column; width: 100%; max-width: 920px; margin: 0 auto; padding: 0; background: var(--card); container-type: inline-size; }
-@media (min-width: 921px) {
-    .content.nav-page { box-shadow: 0 0 0 1px var(--line); }
+body:has(.nav-page) { overflow: hidden; overscroll-behavior: none; }
+.content.nav-page { position: fixed; inset: 0; z-index: 30; display: flex; flex-direction: column; width: 100%; max-width: 430px; margin: 0 auto; padding: 0; background: var(--card); container-type: inline-size; }
+@media (min-width: 431px) {
+    .content.nav-page { box-shadow: 0 0 0 1px var(--line), 0 12px 48px rgba(0, 0, 0, .25); }
 }
+.nav-back, .nav-cta, .nav-emergency, .nav-map-button { transition: transform .12s ease, background-color .2s ease, opacity .2s ease; }
+.nav-back:active, .nav-cta:not(:disabled):active, .nav-emergency:active, .nav-map-button:active { transform: scale(.96); }
+.nav-turn { transition: background-color .25s ease, color .25s ease, top .25s ease; }
 
 /* Floating app bar over the map */
 .nav-topbar { position: absolute; z-index: 6; top: calc(10px + env(safe-area-inset-top)); left: 10px; right: 10px; display: flex; align-items: center; gap: 10px; padding: 6px 12px 6px 6px; border-radius: 16px; background: var(--card); color: var(--ink); box-shadow: 0 4px 16px rgba(0, 0, 0, .14); }
@@ -502,129 +528,176 @@ a.nav-item, a.primary-button { text-decoration: none; }
 .sample-code { display: block; width: max-content; margin: 22px auto 48px; padding: 12px 18px; background: var(--soft); color: var(--muted); border-radius: 8px; font-weight: 700; }
 
 /* =========================================================
-   MOBILE (<= 650px)
+   PHONE LAYOUT
+   Applies on every screen: the app column is always phone-width (see .app-shell).
    ========================================================= */
-@media (max-width: 650px) {
-    .topbar { padding: 12px 16px; }
-    .header-actions { gap: 8px; }
-    .brand-name { font-size: 20px; }
+/* Type scale (matches the navigation screen): page title 26, section heading 17,
+   card title 15–16, body 13–14, small 11–12. Inputs stay 16px so iOS doesn't zoom on focus. */
 
-    .content { width: 100%; min-width: 0; padding: 30px 16px calc(88px + env(safe-area-inset-bottom)); }
-    .content h1 { font-size: clamp(30px, 9vw, 36px); line-height: 1.08; letter-spacing: -1px; }
-    .subhead, .page-heading p { font-size: 17px; }
-    .eyebrow { font-size: 13px; }
+/* Header */
+.topbar { padding: calc(10px + env(safe-area-inset-top)) 16px 10px; }
+.brand { gap: 10px; }
+.logo { width: 34px; height: 34px; border-radius: 9px; }
+.brand-name { font-size: 19px; }
+.header-actions { gap: 8px; }
+.icon-button, .avatar { width: 40px; height: 40px; }
+.avatar { font-size: 14px; }
+.icon-button svg { width: 20px; height: 20px; }
 
-    .purple-card { padding: 20px; border-radius: 16px; margin-top: 24px; }
-    .route-id { font-size: 28px; margin: 22px 0 20px; }
-    .route-id small { font-size: 12px; margin-left: 4px; }
-    .stats b { font-size: 25px; }
-    .stats span { font-size: 10px; }
-    .stats > div { padding-right: 10px; margin-right: 10px; }
-    .quick-actions { gap: 10px; }
-    .quick-actions button { font-size: 14px; }
-    .next-stop { width: 100%; padding: 18px; border-radius: 17px; }
+/* Shared */
+.content { width: 100%; min-width: 0; padding: 20px 16px calc(92px + env(safe-area-inset-bottom)); }
+.content h1 { font-size: 26px; line-height: 1.15; letter-spacing: -.6px; margin: 0 0 6px; }
+.eyebrow { font-size: 12px; letter-spacing: .06em; margin: 0 0 6px; }
+.subhead, .page-heading p { font-size: 15px; line-height: 1.4; margin: 0 0 18px; }
+.panel { width: 100%; min-width: 0; padding: 16px; border-radius: 16px; margin-bottom: 12px; }
+.next-stop h2, .panel h2 { font-size: 17px; }
+.card-row { gap: 10px; }
+.card-row > span:first-child { font-size: 13px; gap: 8px; }
+.panel .card-row > svg { width: 20px; height: 20px; color: var(--muted); }
+.step-pill, .status-purple { font-size: 12px; padding: 4px 8px; }
+.status-green, .status-amber { font-size: 12px; padding: 5px 9px; gap: 4px; border-radius: 7px; }
+.status-green svg { width: 14px; height: 14px; }
+.primary-button, .secondary-action { min-height: 48px; padding: 12px 14px; border-radius: 12px; font-size: 15px; gap: 8px; }
+.primary-button svg, .secondary-action svg { width: 18px; height: 18px; }
+.text-button { font-size: 14px; gap: 4px; }
+.text-button svg { width: 16px; height: 16px; }
+.modal-copy, .helper, .muted { font-size: 14px; }
 
-    .page-heading { margin-bottom: 28px; }
-    .page-heading p { margin-bottom: 0; }
-    .alert-tile { width: 66px; height: 66px; border-radius: 15px; }
-    .panel { width: 100%; min-width: 0; padding: 18px; border-radius: 18px; }
-    .map { height: 250px; margin-top: 20px; }
-    .map-footer { font-size: 14px; padding-top: 18px; }
-    .sequence-row h3 { font-size: 20px; }
-    .sequence-row p { font-size: 14px; }
-    .number { width: 42px; height: 42px; }
+/* Home */
+.purple-card { padding: 16px; border-radius: 16px; margin-top: 0; }
+.purple-card .card-row > span:first-child svg { width: 16px; height: 16px; }
+.outline-pill { padding: 5px 12px; font-size: 12px; font-weight: 600; text-decoration: none; color: inherit; }
+.route-id { font-size: 22px; margin: 14px 0 12px; }
+.route-id small { font-size: 12px; margin-left: 4px; opacity: .85; }
+.stats { margin-bottom: 12px; }
+.stats > div { padding-right: 10px; margin-right: 10px; }
+.stats b { font-size: 20px; }
+.stats b small { font-size: 12px; }
+.stats span { font-size: 11px; opacity: .9; }
+.route-note { gap: 6px; padding-top: 10px; font-size: 13px; }
+.route-note svg { width: 14px; height: 14px; }
+.quick-actions { gap: 10px; margin: 12px 0; }
+.quick-actions button { padding: 12px; gap: 8px; border-radius: 12px; font-size: 14px; }
+.quick-actions button svg { width: 18px; height: 18px; }
+.quick-actions button svg:last-child { width: 16px; height: 16px; color: var(--muted); }
+.next-stop { width: 100%; padding: 16px; border-radius: 16px; }
+.stop-main { gap: 12px; margin: 12px 0; }
+.stop-main h3, .sequence h3, .stop-card h2 { font-size: 16px; margin: 0 0 2px; }
+.stop-main p { font-size: 13px; }
+.eta b { font-size: 20px; }
+.eta span { font-size: 11px; }
+.stop-meta { flex-wrap: wrap; gap: 6px 12px; font-size: 12px; margin-bottom: 14px; }
+.stop-meta svg { width: 14px; height: 14px; }
+.stop-meta em { padding: 3px 7px; font-size: 11px; }
 
-    .stop-card .card-row { margin-bottom: 30px; }
-    .stop-card h2 { font-size: 28px; }
-    .stop-card > p { font-size: 17px; }
-    .instruction { font-size: 14px; }
-    .handoff > .card-row p { font-size: 15px; }
-    .package-row { gap: 12px; padding: 20px 0; }
-    .package-row b { font-size: 18px; }
-    .package-row small { font-size: 13px; }
-    .check-box { width: 36px; height: 36px; }
-    .complete-handoff h2 { font-size: 20px; }
-    .complete-handoff input, .complete-handoff select { font-size: 16px; padding: 13px 14px; }
-    .arrival-row b, .verify-row b, .photo-row b { font-size: 15px; }
+/* Route */
+.page-heading { align-items: center; gap: 12px; margin-bottom: 16px; }
+.page-heading h1 { margin-bottom: 4px; }
+.page-heading p { margin-bottom: 0; }
+.page-heading .eyebrow { margin: 0; }
+.alert-tile { flex: none; width: 48px; height: 48px; border: 0; border-radius: 14px; }
+.alert-tile svg { width: 22px; height: 22px; }
+.map { height: 220px; margin-top: 12px; border-radius: 12px; }
+.map-footer { gap: 8px; padding-top: 12px; font-size: 13px; }
+.map-footer span { gap: 6px; }
+.map-footer svg { width: 16px; height: 16px; }
+.sequence-row { gap: 12px; padding: 14px 0; }
+.sequence-row p { font-size: 13px; margin: 2px 0 0; }
+.number { width: 32px; height: 32px; font-size: 14px; }
 
-    .metric-grid { gap: 10px; }
-    .metric-card { padding: 18px; min-height: 160px; border-radius: 18px; }
-    .metric-card > div { font-size: 15px; gap: 8px; }
-    .metric-card > b { font-size: 39px; margin: 22px 0 14px; }
-    .metric-card p { font-size: 13px; }
-    .journey { gap: 12px; }
-    .truck-icon { width: 50px; height: 50px; border-radius: 14px; }
-    .journey h3 { font-size: 19px; }
-    .journey p, .journey b { font-size: 14px; }
-    .journey > span { font-size: 12px; }
-    .empty-state { padding: 24px 0 8px; }
-    .sync-card { gap: 12px; }
+/* Delivery */
+.stop-card .card-row { margin-bottom: 14px; }
+.stop-card > p { font-size: 14px; }
+.stop-card hr { margin: 14px 0; }
+.instruction { gap: 10px; font-size: 14px; font-weight: 500; }
+.instruction svg { flex: none; width: 20px; height: 20px; }
+.handoff h2, .complete-handoff h2 { font-size: 17px; margin: 0 0 2px; }
+.handoff > .card-row p { font-size: 13px; }
+.package-row { gap: 12px; padding: 12px 0; }
+.package-row > svg { width: 20px; height: 20px; }
+.package-row > span:nth-of-type(2) { gap: 2px; }
+.package-row b { display: block; font-size: 15px; }
+.package-row small { font-size: 12px; }
+.check-box { width: 26px; height: 26px; border-radius: 7px; }
+.check-box svg { width: 15px; height: 15px; }
+.green-check { width: 20px; height: 20px; }
+.select-all { margin-top: 12px; }
+.complete-handoff { gap: 12px; }
+.complete-handoff label { font-size: 14px; gap: 6px; }
+.complete-handoff input, .complete-handoff select { font-size: 16px; padding: 11px 12px; border-radius: 10px; }
+.arrival-row, .verify-row, .photo-row { gap: 12px; }
+.arrival-icon, .qr-icon { width: 40px; height: 40px; }
+.arrival-icon svg, .qr-icon svg { width: 20px; height: 20px; }
+.verify-row { padding: 10px 12px; border-radius: 12px; }
+.photo-row { padding: 12px; border-radius: 12px; }
+.verify-row > svg:last-child, .photo-row svg { width: 18px; height: 18px; }
+.arrival-row b, .verify-row b, .photo-row b { font-size: 14px; }
+.arrival-row small, .verify-row small, .photo-row small { font-size: 12px; }
+.complete-button { min-height: 48px; padding: 12px 14px; border-radius: 12px; font-size: 15px; }
+.complete-button svg { width: 18px; height: 18px; }
+.complete-handoff .helper, .helper.center { font-size: 13px; }
+.parking-link { padding: 14px; gap: 10px; border-radius: 12px; font-size: 14px; }
+.parking-link svg { width: 18px; height: 18px; }
+.delivery-page .panel p { margin: 0; color: var(--muted); }
+.success-icon { width: 64px; height: 64px; }
+.success-icon svg { width: 30px; height: 30px; }
+.success-summary > div { padding: 10px 0; font-size: 14px; }
 
-    .bottom-nav { bottom: 8px; width: calc(100% - 24px); border-radius: 16px; padding: 4px; }
-    .nav-item { font-size: 11px; padding: 7px 6px 6px; border-radius: 12px; gap: 3px; }
-    .nav-item svg { width: 18px; height: 18px; }
+/* History */
+.metric-grid { gap: 10px; margin-bottom: 12px; }
+.metric-card { padding: 14px; min-height: 0; border-radius: 16px; }
+.metric-card > div { gap: 6px; font-size: 13px; }
+.metric-card > div svg { width: 16px; height: 16px; }
+.metric-card > b { font-size: 28px; margin: 10px 0 4px; }
+.metric-card p { font-size: 12px; }
+.journeys { margin-top: 0; }
+.select-button { padding: 7px 10px; gap: 4px; border-radius: 10px; font-size: 13px; }
+.select-button svg { width: 16px; height: 16px; }
+.journey { gap: 12px; padding: 12px 0; }
+.truck-icon { flex: none; width: 40px; height: 40px; border-radius: 12px; }
+.truck-icon svg { width: 20px; height: 20px; }
+.journey h3 { font-size: 15px; margin: 0 0 2px; }
+.journey p, .journey b { font-size: 12px; margin: 0 0 2px; }
+.journey > span { font-size: 11px; padding: 4px 8px; }
+.reports { margin-top: 0; }
+.empty-state { padding: 16px 0 4px; gap: 4px; }
+.empty-state svg { width: 32px; height: 32px; }
+.empty-state p { font-size: 15px; margin-top: 4px; }
+.empty-state small { font-size: 13px; }
+.sync-card { gap: 12px; }
+.sync-card > svg { width: 20px; height: 20px; }
+.sync-card b { font-size: 15px; }
+.sync-card p { margin: 4px 0 8px; font-size: 13px; }
+.sync-card button { font-size: 14px; gap: 6px; }
+.sync-card button svg { width: 16px; height: 16px; }
 
-    .modal { padding: 30px 20px 22px; border-radius: 24px; }
-    .modal h2 { font-size: 27px; padding-right: 42px; }
-    .incident-grid button { min-height: 100px; padding: 16px; font-size: 15px; }
-    .incident-context div, .fine-context div { font-size: 16px; }
-    .modal label { font-size: 18px; }
-    .modal input, .modal textarea { font-size: 16px; }
-    .close { width: 45px; height: 45px; right: 15px; top: 12px; }
+/* Bottom nav: fixed to the window, so cap it to the app column */
+.bottom-nav { bottom: calc(8px + env(safe-area-inset-bottom)); width: min(calc(100% - 24px), 406px); border-radius: 16px; padding: 4px; }
+.nav-item { font-size: 11px; padding: 7px 6px 6px; border-radius: 12px; gap: 3px; }
+.nav-item svg { width: 20px; height: 20px; }
 
-    /* Delivery page: tighter type and spacing to match the design */
-    .delivery-page .eyebrow { font-size: 14px; font-weight: 500; letter-spacing: .04em; color: var(--muted); margin: 0 0 8px; }
-    .delivery-page h1 { font-size: 32px; letter-spacing: -.02em; margin: 0 0 8px; }
-    .delivery-page .subhead { font-size: 16px; color: var(--muted); margin: 0 0 20px; }
-    .delivery-page .stop-card .card-row { margin-bottom: 18px; }
-    .delivery-page .stop-card h2 { font-size: 22px; margin: 0 0 4px; }
-    .delivery-page .handoff h2, .delivery-page .complete-handoff h2 { font-size: 20px; letter-spacing: -.01em; margin: 0 0 4px; }
-    .delivery-page .panel p { margin: 0; color: var(--muted); font-size: 15px; }
-    .delivery-page .instruction { font-weight: 500; gap: 10px; }
-    .delivery-page .package-row { padding: 14px 0; }
-    .delivery-page .package-row b { display: block; font-size: 17px; font-weight: 700; }
-    .delivery-page .package-row small { font-size: 14px; }
-}
-
-/* Large navigation screen (tablets, desktop): same type scale as the other pages at this width.
-   Short windows keep the compact sizes so the map isn't squeezed. */
-@media (min-width: 600px) and (min-height: 760px) {
-    .nav-topbar { top: 20px; left: 20px; right: 20px; gap: 14px; padding: 8px 20px 8px 8px; border-radius: 20px; }
-    .content .nav-topbar h1 { font-size: 30px; letter-spacing: -.5px; }
-    .nav-back { width: 52px; height: 52px; border-radius: 14px; }
-    .nav-progress { font-size: 18px; }
-    .nav-turn { top: 100px; left: 20px; right: 20px; gap: 18px; padding: 16px 20px; border-radius: 20px; }
-    .nav-page.navigating .nav-turn { top: 20px; }
-    .nav-turn-icon { width: 60px; height: 60px; border-radius: 14px; }
-    .nav-turn-text strong { font-size: 29px; }
-    .nav-turn-text span { font-size: 20px; }
-    .nav-turn-then { font-size: 17px; margin-top: 4px; }
-    .nav-turn.navigating { padding: 18px 22px; }
-    .nav-turn.navigating .nav-turn-icon { width: 76px; height: 76px; border-radius: 18px; }
-    .nav-turn.navigating .nav-turn-text strong { font-size: 40px; }
-    .nav-turn.navigating .nav-turn-text span { font-size: 22px; }
-    .nav-gps { left: 20px; bottom: 36px; padding: 6px 10px; font-size: 15px; }
-    .nav-emergency { right: 20px; min-height: 54px; padding: 0 22px; border-radius: 16px; font-size: 18px; }
-    .nav-map-button { min-height: 54px; padding: 0 20px; border-radius: 16px; font-size: 18px; }
-    .nav-recenter { left: 20px; bottom: 76px; }
-    .nav-mute { right: 20px; bottom: 96px; width: 54px; padding: 0; }
-    .nav-card { gap: 20px; padding: 28px 30px 30px; }
-    .nav-card h2 { font-size: 29px; margin-bottom: 8px; }
-    .nav-card p { font-size: 20px; }
-    .nav-card small { font-size: 18px; }
-    .nav-card .status-purple { padding: 7px 12px; font-size: 16px; }
-    .nav-eta strong { font-size: 32px; }
-    .nav-window { gap: 12px; padding: 16px 18px; border-radius: 14px; font-size: 20px; }
-    .nav-trip-stats { gap: 14px; }
-    .nav-trip-stats span { padding: 16px 18px; border-radius: 14px; font-size: 16px; }
-    .nav-trip-stats b { font-size: 27px; margin-bottom: 2px; }
-    .nav-cta { min-height: 62px; gap: 12px; border-radius: 16px; font-size: 18px; }
-    .nav-page .helper.center { font-size: 18px; }
-    .nav-back svg { width: 24px; height: 24px; }
-    .nav-turn-icon svg { width: 32px; height: 32px; }
-    .nav-turn.navigating .nav-turn-icon svg { width: 42px; height: 42px; }
-    .nav-emergency svg, .nav-map-button svg, .nav-cta svg, .nav-window svg { width: 22px; height: 22px; }
-}
+/* Modals */
+.modal-backdrop { padding: 16px; }
+.modal { width: min(100%, 400px); padding: 22px 18px 18px; border-radius: 20px; }
+.modal h2 { font-size: 22px; letter-spacing: -.4px; margin: 0 0 14px; padding-right: 44px; }
+.modal h3 { font-size: 17px; margin: 0 0 4px; }
+.close { width: 36px; height: 36px; right: 14px; top: 16px; }
+.close svg { width: 20px; height: 20px; }
+.incident-context, .fine-context { gap: 12px; padding: 14px; border-radius: 12px; margin: 0 0 16px; }
+.incident-context > svg, .fine-context > svg { flex: none; width: 22px; height: 22px; }
+.incident-context div, .fine-context div { gap: 2px; font-size: 14px; }
+.incident-label { font-size: 13px; margin-bottom: 8px; }
+.incident-grid { gap: 10px; margin-bottom: 16px; }
+.incident-grid button { min-height: 80px; padding: 12px; border-radius: 12px; font-size: 14px; }
+.incident-grid button > svg:first-child { width: 22px; height: 22px; }
+.incident-check { top: 10px; right: 10px; width: 16px; height: 16px; }
+.modal label { font-size: 14px; margin: 12px 0; }
+.modal input, .modal textarea { font-size: 16px; margin-top: 6px; padding: 11px 12px; border-radius: 10px; }
+.modal textarea { min-height: 96px; }
+.danger-button { min-height: 48px; padding: 12px 14px; border-radius: 12px; font-size: 15px; }
+.qr { margin: 20px 0 12px; }
+.qr svg { width: 72px; height: 72px; }
+.sample-code { margin: 12px auto 18px; padding: 8px 12px; font-size: 13px; }
 
 /* Narrow navigation screen (iPhone SE size) */
 @container (max-width: 360px) {
@@ -662,20 +735,5 @@ a.nav-item, a.primary-button { text-decoration: none; }
     --purple-disabled: #4a3d85;
 }
 :root[data-theme='dark'] .modal-backdrop { background: #000a; }
-
-.nav-item {
-    border: 0;
-    background: transparent;
-    padding: 8px 8px;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    align-items: center;
-    color: var(--ink);
-    font-weight: 600;
-    font-size: 13px;
-    border-radius: 16px;
-}
-.nav-item.active { background: var(--purple); color: white; }
 
 .outline-pill { display: inline-flex; align-items: center; gap: 6px; }

@@ -1,42 +1,111 @@
+'use client'
+
+import { useState } from 'react'
 import {
     ArrowRight,
-    ChevronDown,
     ClipboardList,
     Clock3,
     Navigation,
     Package,
     Route as RouteIcon,
     SlidersHorizontal,
-    Truck,
     UploadCloud,
 } from 'lucide-react'
+import { formatDayMonth, formatShortDate } from '@/lib/maps/format'
+import { useNow } from '@/lib/use-now'
+import { JourneysPanel } from './journeys-panel'
+import { TRIPS } from './trips'
 
-const metrics = [
-    { label: 'Recent trips', value: '4', unit: '', desc: '22–29 September', Icon: RouteIcon },
-    { label: 'On-time rate', value: '92', unit: '%', desc: '↗ 3% vs last week · sample', Icon: Clock3 },
-    { label: 'Distance', value: '537', unit: 'km', desc: 'Completed trips', Icon: Navigation },
-    { label: 'Packages', value: '184', unit: '', desc: 'Handed over', Icon: Package },
-]
+type PeriodKey = '7d' | '30d' | 'all'
 
-const trips = [
-    { id: 'WD-R13', meta: '25 Sep 2026 · 6h 12m', stats: '7 stops     142 km', status: '100% on time' },
-    { id: 'WD-R11', meta: '24 Sep 2026 · 4h 48m', stats: '5 stops     98 km', status: '80% on time' },
-    { id: 'WD-R08', meta: '23 Sep 2026 · 7h 30m', stats: '9 stops     176 km', status: '89% on time' },
-    { id: 'WD-R05', meta: '22 Sep 2026 · 5h 10m', stats: '6 stops     121 km', status: '100% on time' },
+const PERIODS: { key: PeriodKey; label: string; days: number }[] = [
+    { key: '7d', label: 'Last 7 days', days: 7 },
+    { key: '30d', label: 'Last 30 days', days: 30 },
+    { key: 'all', label: 'All time', days: Infinity },
 ]
+const DEFAULT_PERIOD: PeriodKey = '30d'
+const DAY = 86_400_000
 
 export default function HistoryPage() {
+    const now = useNow()
+    const [filtersOpen, setFiltersOpen] = useState(false)
+    const [period, setPeriod] = useState<PeriodKey>(DEFAULT_PERIOD)
+    const activePeriod = PERIODS.find((p) => p.key === period) ?? PERIODS[1]
+    const customised = period !== DEFAULT_PERIOD
+
+    const trips = TRIPS.filter((t) => t.daysAgo <= activePeriod.days)
+    const count = trips.length
+    const sum = (pick: (t: (typeof trips)[number]) => number) => trips.reduce((total, t) => total + pick(t), 0)
+    const onTimeRate = count ? Math.round(sum((t) => t.onTime) / count) : null
+
+    // Trip dates need the device's clock, so they're left out until it's available
+    let range = activePeriod.label
+    if (now !== null && count) {
+        const newest = formatDayMonth(now - Math.min(...trips.map((t) => t.daysAgo)) * DAY)
+        const oldest = formatDayMonth(now - Math.max(...trips.map((t) => t.daysAgo)) * DAY)
+        range = newest === oldest ? newest : `${oldest} – ${newest}`
+    }
+
+    const metrics = [
+        { label: 'Recent trips', value: String(count), unit: '', desc: count ? range : 'No trips in this period', Icon: RouteIcon },
+        { label: 'On-time rate', value: onTimeRate === null ? '—' : String(onTimeRate), unit: onTimeRate === null ? '' : '%', desc: 'Average across trips', Icon: Clock3 },
+        { label: 'Distance', value: String(sum((t) => t.km)), unit: 'km', desc: 'Completed trips', Icon: Navigation },
+        { label: 'Packages', value: String(sum((t) => t.packages)), unit: '', desc: 'Handed over', Icon: Package },
+    ]
+
+    const journeys = trips.map((t) => ({
+        id: t.id,
+        meta: now === null ? t.duration : `${formatShortDate(now - t.daysAgo * DAY)} · ${t.duration}`,
+        stops: t.stops,
+        km: t.km,
+        onTime: t.onTime,
+    }))
+
     return (
         <main className="content history-page">
             <div className="page-heading">
                 <div>
                     <h1>Trip history</h1>
-                    <p className="eyebrow">YOUR WORK, ALL IN ONE PLACE</p>
+                    <p className="eyebrow">{customised ? activePeriod.label.toUpperCase() : 'YOUR WORK, ALL IN ONE PLACE'}</p>
                 </div>
-                <button className="icon-button" aria-label="Filter">
-                    <SlidersHorizontal size={24} />
+                <button
+                    type="button"
+                    className={filtersOpen || customised ? 'filter-toggle active' : 'filter-toggle'}
+                    onClick={() => setFiltersOpen((open) => !open)}
+                    aria-expanded={filtersOpen}
+                    aria-controls="history-filters"
+                    aria-label="Filter trip history"
+                >
+                    <SlidersHorizontal size={20} />
+                    {customised && <span className="filter-toggle-dot" aria-hidden="true" />}
                 </button>
             </div>
+
+            {filtersOpen && (
+                <div className="filter-panel history-filters" id="history-filters">
+                    <div className="chip-group" role="group" aria-label="Time period">
+                        <span>Period</span>
+                        <div>
+                            {PERIODS.map((p) => (
+                                <button
+                                    key={p.key}
+                                    type="button"
+                                    className="chip"
+                                    aria-pressed={period === p.key}
+                                    onClick={() => setPeriod(p.key)}
+                                >
+                                    {p.label}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                    {customised && (
+                        <button type="button" className="filter-reset" onClick={() => setPeriod(DEFAULT_PERIOD)}>
+                            Reset
+                        </button>
+                    )}
+                </div>
+            )}
 
             <div className="metric-grid">
                 {metrics.map(({ label, value, unit, desc, Icon }) => (
@@ -54,29 +123,7 @@ export default function HistoryPage() {
                 ))}
             </div>
 
-            <section className="panel journeys">
-                <div className="card-row">
-                    <h2>Recent journeys</h2>
-                    <button className="select-button">
-                        All trips <ChevronDown size={20} />
-                    </button>
-                </div>
-                {trips.map((t) => (
-                    <div className="journey" key={t.id}>
-                        <div className="truck-icon">
-                            <Truck size={26} />
-                        </div>
-                        <div>
-                            <h3>{t.id}</h3>
-                            <p>{t.meta}</p>
-                            <b>{t.stats}</b>
-                        </div>
-                        <span className={t.status.startsWith('100') ? 'status-green' : 'status-amber'}>
-              {t.status}
-            </span>
-                    </div>
-                ))}
-            </section>
+            <JourneysPanel trips={journeys} />
 
             <section className="panel reports">
                 <div className="card-row">

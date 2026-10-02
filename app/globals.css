@@ -604,6 +604,24 @@ body:has(.nav-page) { overflow: hidden; overscroll-behavior: none; }
 .sequence-row { gap: 12px; padding: 14px 0; }
 .sequence-row p { font-size: 13px; margin: 2px 0 0; }
 .number { width: 32px; height: 32px; font-size: 14px; }
+/* Filter toggle + panel (Route stop sequence, History period) */
+.filter-toggle { position: relative; flex: none; width: 38px; height: 38px; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 10px; background: transparent; color: var(--muted); transition: transform .12s ease, background-color .2s ease, color .2s ease; }
+.filter-toggle.active { background: var(--purple-soft); border-color: transparent; color: var(--purple-ink); }
+.filter-toggle:active { transform: scale(.94); }
+.filter-toggle svg { width: 20px; height: 20px; }
+.filter-toggle-dot { position: absolute; top: 6px; right: 6px; width: 7px; height: 7px; border-radius: 50%; background: var(--purple); box-shadow: 0 0 0 2px var(--card); }
+.filter-panel { display: flex; flex-direction: column; gap: 12px; margin-top: 12px; padding: 12px; border-radius: 12px; background: var(--soft); }
+.history-filters { margin: 0 0 12px; border: 1px solid var(--line); background: var(--card); }
+.history-filters .chip { background: var(--soft); }
+.history-filters .chip[aria-pressed="true"] { background: var(--purple); }
+.chip-group { display: flex; flex-direction: column; gap: 6px; }
+.chip-group > span { font-size: 12px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
+.chip-group > div { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { min-height: 34px; padding: 0 12px; border: 1px solid var(--line); border-radius: 999px; background: var(--card); color: var(--ink); font-size: 13px; font-weight: 600; transition: transform .12s ease, background-color .2s ease, color .2s ease; }
+.chip:active { transform: scale(.96); }
+.chip[aria-pressed="true"] { background: var(--purple); border-color: var(--purple); color: #fff; }
+.filter-reset { align-self: flex-start; padding: 0; border: 0; background: none; color: var(--purple-ink); font-size: 13px; font-weight: 700; }
+.filter-summary { margin: 12px 0 0; font-size: 12px; font-weight: 600; color: var(--muted); }
 
 /* Delivery */
 .stop-card .card-row { margin-bottom: 14px; }
@@ -652,8 +670,22 @@ body:has(.nav-page) { overflow: hidden; overscroll-behavior: none; }
 .metric-card p { font-size: 12px; }
 .journeys { margin-top: 0; }
 .select-button { padding: 7px 10px; gap: 4px; border-radius: 10px; font-size: 13px; }
-.select-button svg { width: 16px; height: 16px; }
+.select-button svg { width: 16px; height: 16px; transition: transform .2s ease; }
+.select-button { color: var(--ink); transition: transform .12s ease, border-color .2s ease; }
+.select-button:active { transform: scale(.96); }
+.select-button.open { border-color: var(--purple); }
+.select-button.open svg { transform: rotate(180deg); }
+.select-menu { position: relative; flex: none; }
+.select-options { position: absolute; z-index: 10; top: calc(100% + 6px); right: 0; min-width: 190px; display: flex; flex-direction: column; padding: 4px; border: 1px solid var(--line); border-radius: 12px; background: var(--card); box-shadow: 0 10px 28px rgba(0, 0, 0, .22); }
+.select-options button { min-height: 42px; display: flex; align-items: center; gap: 8px; padding: 0 10px; border: 0; border-radius: 8px; background: none; color: var(--ink); font-size: 14px; font-weight: 600; text-align: left; }
+.select-options button:active, .select-options button[aria-selected="true"] { background: var(--soft); }
+.select-options button[aria-selected="true"] { color: var(--purple-ink); }
+.select-count { margin-left: auto; min-width: 22px; padding: 1px 6px; border-radius: 999px; background: var(--soft); color: var(--muted); font-size: 12px; text-align: center; }
+.select-options button[aria-selected="true"] .select-count { background: var(--card); }
+.select-options svg { width: 16px; height: 16px; }
+.journeys-empty { margin: 16px 0 4px; text-align: center; font-size: 13px; color: var(--muted); }
 .journey { gap: 12px; padding: 12px 0; }
+.journey:last-child { border-bottom: 0; padding-bottom: 0; }
 .truck-icon { flex: none; width: 40px; height: 40px; border-radius: 12px; }
 .truck-icon svg { width: 20px; height: 20px; }
 .journey h3 { font-size: 15px; margin: 0 0 2px; }

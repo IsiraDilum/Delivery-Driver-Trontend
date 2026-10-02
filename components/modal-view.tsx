@@ -1,7 +1,9 @@
 'use client'
 
+import { useState } from 'react'
 import {
     Box,
+    Check,
     CircleHelp,
     MapPin,
     Route as RouteIcon,
@@ -13,6 +15,15 @@ import {
 
 export type Modal = 'incident' | 'fine' | 'verify' | null
 
+const incidentTypes = [
+    ['Vehicle breakdown', Wrench],
+    ['Flat tyre', CircleHelp],
+    ['Accident / collision', Zap],
+    ['Road blocked', RouteIcon],
+    ['Cargo issue', Box],
+    ['Other', CircleHelp],
+] as const
+
 export function ModalView({
                               modal,
                               close,
@@ -20,16 +31,10 @@ export function ModalView({
     modal: Modal
     close: () => void
 }) {
-    if (!modal) return null
+    // Hooks must run before the early return below
+    const [selectedIncident, setSelectedIncident] = useState<string | null>(null)
 
-    const incidentTypes = [
-        ['Vehicle breakdown', Wrench],
-        ['Flat tyre', CircleHelp],
-        ['Accident / collision', Zap],
-        ['Road blocked', RouteIcon],
-        ['Cargo issue', Box],
-        ['Other', CircleHelp],
-    ] as const
+    if (!modal) return null
 
     return (
         <div className="modal-backdrop">
@@ -41,27 +46,50 @@ export function ModalView({
                 {modal === 'incident' && (
                     <>
                         <h2>Report an incident</h2>
+
                         <div className="incident-context">
                             <MapPin size={30} />
                             <div>
                                 <b>WD-R14 · Vehicle V-14</b>
-                                <span>Northgate Market ·</span>
+                                <span>Northgate Market · Stop 1 of 4</span>
                             </div>
                         </div>
-                        <div className="incident-grid">
-                            {incidentTypes.map(([label, Icon]) => (
-                                <button key={label}>
-                                    <Icon size={29} />
-                                    <span>{label}</span>
-                                </button>
-                            ))}
+
+                        <p className="incident-label">What type of incident?</p>
+                        <div className="incident-grid" role="radiogroup" aria-label="Incident type">
+                            {incidentTypes.map(([label, Icon]) => {
+                                const isSelected = selectedIncident === label
+                                return (
+                                    <button
+                                        key={label}
+                                        type="button"
+                                        role="radio"
+                                        aria-checked={isSelected}
+                                        className={isSelected ? 'selected' : undefined}
+                                        onClick={() => setSelectedIncident(label)}
+                                    >
+                                        <Icon size={29} />
+                                        <span>{label}</span>
+                                        {isSelected && (
+                                            <Check size={20} className="incident-check" aria-hidden="true" />
+                                        )}
+                                    </button>
+                                )
+                            })}
                         </div>
+
                         <label>
                             Details (optional)
                             <textarea placeholder="What happened? Are you in a safe location?" />
                         </label>
-                        <button className="danger-button" onClick={close}>
-                            Save incident report
+
+                        <button
+                            type="button"
+                            className="danger-button"
+                            onClick={close}
+                            disabled={!selectedIncident}
+                        >
+                            {selectedIncident ? 'Save incident report' : 'Select an incident type'}
                         </button>
                     </>
                 )}

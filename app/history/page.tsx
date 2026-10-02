@@ -12,10 +12,10 @@ import {
 } from 'lucide-react'
 
 const metrics = [
-    { label: 'Recent trips', value: '4', desc: '22–29 September', Icon: RouteIcon },
-    { label: 'On-time rate', value: '92%', desc: '↗ 3% vs last week · sample', Icon: Clock3 },
-    { label: 'Distance', value: '537 km', desc: 'Completed trips', Icon: Navigation },
-    { label: 'Packages', value: '184', desc: 'Handed over', Icon: Package },
+    { label: 'Recent trips', value: '4', unit: '', desc: '22–29 September', Icon: RouteIcon },
+    { label: 'On-time rate', value: '92', unit: '%', desc: '↗ 3% vs last week · sample', Icon: Clock3 },
+    { label: 'Distance', value: '537', unit: 'km', desc: 'Completed trips', Icon: Navigation },
+    { label: 'Packages', value: '184', unit: '', desc: 'Handed over', Icon: Package },
 ]
 
 const trips = [
@@ -39,13 +39,16 @@ export default function HistoryPage() {
             </div>
 
             <div className="metric-grid">
-                {metrics.map(({ label, value, desc, Icon }) => (
+                {metrics.map(({ label, value, unit, desc, Icon }) => (
                     <section className="metric-card" key={label}>
                         <div>
                             <Icon size={25} />
                             {label}
                         </div>
-                        <b>{value}</b>
+                        <b>
+                            {value}
+                            {unit && <small>{unit}</small>}
+                        </b>
                         <p>{desc}</p>
                     </section>
                 ))}

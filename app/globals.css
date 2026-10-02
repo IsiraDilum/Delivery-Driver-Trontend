@@ -362,6 +362,8 @@ a.nav-item, a.primary-button { text-decoration: none; }
 .metric-card > div { display: flex; gap: 16px; align-items: center; color: var(--muted); font-size: 24px; }
 .metric-card > b { display: block; font-size: 65px; margin: 38px 0 25px; }
 .metric-card p { color: var(--muted); font-size: 20px; margin: 0; }
+.metric-card > b { white-space: nowrap; }
+.metric-card > b small { font-size: .45em; font-weight: 700; margin-left: 4px; color: var(--muted); }
 .journeys { margin-top: 26px; }
 .select-button { background: var(--card); border: 1px solid var(--line-strong); border-radius: 12px; padding: 16px 22px; display: flex; gap: 24px; align-items: center; font-weight: 700; }
 .journey { display: flex; gap: 24px; align-items: center; padding: 34px 0; border-bottom: 1px solid var(--line); }

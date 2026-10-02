@@ -12,9 +12,17 @@ import {
   Route as RouteIcon,
 } from 'lucide-react'
 import { useModal } from '@/components/app-shell'
+import { formatClockParts, formatDistance } from '@/lib/maps/format'
+import { useRoute } from '@/lib/maps/use-route'
+import { CURRENT_STOP_INDEX, PLANNED_ROUTE, ROUTE_ID, STOPS, TOTAL_PACKAGES } from '@/lib/route-data'
+
+const nextStop = STOPS[CURRENT_STOP_INDEX]
 
 export default function HomePage() {
   const setModal = useModal()
+  const { route, fetchedAt } = useRoute(PLANNED_ROUTE)
+  const nextLeg = route?.legs[CURRENT_STOP_INDEX]
+  const eta = nextLeg ? formatClockParts(fetchedAt + nextLeg.durationSeconds * 1000) : null
 
   return (
       <main className="content home-page">
@@ -34,20 +42,20 @@ export default function HomePage() {
             </Link>
           </div>
           <div className="route-id">
-            LP-6387 <small>Peliyagoda → Colombo</small>
+            {ROUTE_ID} <small>Peliyagoda → Colombo</small>
           </div>
           <div className="stats">
             <div>
-              <b>04</b>
+              <b>{String(STOPS.length).padStart(2, '0')}</b>
               <span>delivery stops</span>
             </div>
             <div>
-              <b>19</b>
+              <b>{TOTAL_PACKAGES}</b>
               <span>packages</span>
             </div>
             <div>
               <b>
-                14.8<small>km</small>
+                {route ? (route.distanceMeters / 1000).toFixed(1) : '--'}<small>km</small>
               </b>
               <span>planned distance</span>
             </div>
@@ -71,27 +79,30 @@ export default function HomePage() {
         <section className="next-stop">
           <div className="card-row">
             <h2>Your next stop</h2>
-            <span className="step-pill">1 / 4</span>
+            <span className="step-pill">
+              {CURRENT_STOP_INDEX + 1} / {STOPS.length}
+            </span>
           </div>
           <div className="stop-main">
             <div>
-              <h3>Northgate Market</h3>
-              <p>42 Negombo Road, Peliyagoda</p>
+              <h3>{nextStop.name}</h3>
+              <p>{nextStop.address}</p>
             </div>
             <div className="eta">
-              <b>6:55</b>
-              <span>AM · ETA</span>
+              <b>{eta ? eta.time : '--:--'}</b>
+              <span>{eta ? `${eta.period} · ETA` : 'ETA'}</span>
             </div>
           </div>
           <div className="stop-meta">
           <span>
-            <Package size={16} />5 packages
+            <Package size={16} />
+            {nextStop.packages} packages
           </span>
             <span>
             <Navigation size={16} />
-            3.2 km away
+              {nextLeg ? `${formatDistance(nextLeg.distanceMeters)} away` : '—'}
           </span>
-            <em>Fresh</em>
+            <em>{nextStop.category}</em>
           </div>
           <Link href="/route/map" className="primary-button">
             Start journey <ArrowRight size={20} />

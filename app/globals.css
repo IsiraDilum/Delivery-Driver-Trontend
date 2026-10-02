@@ -92,8 +92,18 @@ a { color: inherit; }
 .icon-button { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 50%; border: 1px solid var(--line-strong); background: var(--card); color: var(--ink); cursor: pointer; }
 .avatar { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 50%; background: var(--purple-soft); color: var(--purple-ink); font-weight: 600; font-size: 16px; }
 
-.bottom-nav { position: fixed; z-index: 5; bottom: 24px; left: 50%; transform: translateX(-50%); width: min(calc(100% - 48px), 800px); background: var(--card); border: 1px solid var(--line); border-radius: 25px; padding: 9px; display: grid; grid-template-columns: repeat(4, 1fr); box-shadow: 0 14px 28px #1b332b25; }
-
+.bottom-nav {
+    position: fixed; z-index: 5; bottom: 16px; left: 50%;
+    transform: translateX(-50%);
+    width: min(calc(100% - 48px), 800px);
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 20px;   /* was 25px */
+    padding: 5px;          /* was 9px */
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    box-shadow: 0 14px 28px #1b332b25;
+}
 a.nav-item, a.primary-button { text-decoration: none; }
 
 /* =========================================================
@@ -542,21 +552,9 @@ a.nav-item, a.primary-button { text-decoration: none; }
     .empty-state { padding: 24px 0 8px; }
     .sync-card { gap: 12px; }
 
-    .bottom-nav { bottom: 8px; width: calc(100% - 24px); border-radius: 17px; padding: 7px; }
-    .nav-item {
-        border: 1;
-        background: transparent;
-        padding: 8px 8px;      /* was 18px 8px */
-        display: flex;
-        flex-direction: column;
-        gap: 4px;              /* was 10px */
-        align-items: center;
-        color: var(--ink);
-        font-weight: 600;
-        font-size: 13px;       /* was 17px */
-        border-radius: 16px;
-    }
-    .nav-item svg { width: 20px; }
+    .bottom-nav { bottom: 8px; width: calc(100% - 24px); border-radius: 16px; padding: 4px; }
+    .nav-item { font-size: 11px; padding: 7px 6px 6px; border-radius: 12px; gap: 3px; }
+    .nav-item svg { width: 18px; height: 18px; }
 
     .modal { padding: 30px 20px 22px; border-radius: 24px; }
     .modal h2 { font-size: 27px; padding-right: 42px; }

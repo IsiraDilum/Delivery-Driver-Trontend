@@ -3,23 +3,26 @@
 import { useEffect, useState } from 'react'
 import { Moon, Sun } from 'lucide-react'
 
-export function Header() {
-    const [theme, setTheme] = useState<'light' | 'dark'>('light')
+type Theme = 'light' | 'dark'
 
-    // Load saved theme on mount
+export function Header() {
+    const [theme, setTheme] = useState<Theme>('light')
+
+    // layout.tsx has already set data-theme before paint; just sync the icon
     useEffect(() => {
-        const saved = localStorage.getItem('theme') as 'light' | 'dark' | null
-        const initial = saved ?? 'light'
-        setTheme(initial)
-        document.documentElement.setAttribute('data-theme', initial)
+        setTheme(document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light')
     }, [])
 
     function toggleTheme() {
-        const next = theme === 'light' ? 'dark' : 'light'
+        const next: Theme = theme === 'light' ? 'dark' : 'light'
         setTheme(next)
-        document.documentElement.setAttribute('data-theme', next)
-        localStorage.setItem('theme', next)
+        document.documentElement.dataset.theme = next
+        try {
+            localStorage.setItem('theme', next)
+        } catch {}
     }
+
+    const isDark = theme === 'dark'
 
     return (
         <header className="topbar">
@@ -27,14 +30,16 @@ export function Header() {
                 <img src="/images/logo.png" alt="" className="logo" />
                 <span className="brand-name">Waypoint</span>
             </div>
+
             <div className="header-actions">
                 <button
                     type="button"
                     className="icon-button"
-                    aria-label="Toggle theme"
                     onClick={toggleTheme}
+                    aria-pressed={isDark}
+                    aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
                 >
-                    {theme === 'light' ? <Moon size={24} /> : <Sun size={24} />}
+                    {isDark ? <Sun size={24} aria-hidden="true" /> : <Moon size={24} aria-hidden="true" />}
                 </button>
                 <div className="avatar" aria-label="User profile">NS</div>
             </div>

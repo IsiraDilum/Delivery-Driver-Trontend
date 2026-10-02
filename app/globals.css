@@ -305,6 +305,25 @@ a.nav-item, a.primary-button { text-decoration: none; }
 .parking-link { width: 100%; background: transparent; border: 1px dashed var(--line-strong); border-radius: 14px; padding: 18px; display: flex; align-items: center; gap: 12px; color: var(--ink); font-weight: 600; }
 .parking-link > svg:last-child { margin-left: auto; }
 
+/* Photo preview */
+.photo-preview { position: relative; display: flex; align-items: center; gap: 14px; padding: 12px; background: var(--ch-row-bg); border: 1px solid var(--ch-row-border); border-radius: 14px; }
+.photo-preview img { width: 72px; height: 72px; object-fit: cover; border-radius: 10px; flex: none; }
+.photo-preview-info { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; min-width: 0; }
+.photo-preview-info b { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 15px; color: var(--ch-text); }
+.photo-preview-info button { border: 0; background: none; padding: 0; color: var(--purple-ink); font-weight: 700; font-size: 14px; }
+.photo-remove { position: absolute; top: 8px; right: 8px; width: 32px; height: 32px; display: grid; place-items: center; border: 0; border-radius: 50%; background: var(--card); color: var(--muted); }
+.field-error { color: var(--danger-text); font-size: 14px; }
+
+/* Success screen */
+.success-card { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.success-icon { width: 84px; height: 84px; display: grid; place-items: center; border-radius: 50%; background: var(--green-soft); color: var(--green-ink); margin-bottom: 8px; }
+.success-card .subhead { margin-bottom: 12px; }
+.success-summary { width: 100%; margin: 0 0 20px; text-align: left; }
+.success-summary > div { display: flex; justify-content: space-between; gap: 16px; padding: 14px 0; border-bottom: 1px solid var(--line); }
+.success-summary dt { color: var(--muted); }
+.success-summary dd { margin: 0; font-weight: 700; }
+.success-photo { width: 100%; max-height: 220px; object-fit: cover; border-radius: 14px; margin-bottom: 20px; }
+
 /* =========================================================
    HISTORY
    ========================================================= */

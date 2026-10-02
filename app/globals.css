@@ -615,17 +615,16 @@ a.nav-item, a.primary-button { text-decoration: none; }
 .nav-item {
     border: 0;
     background: transparent;
-    padding: 18px 8px;
+    padding: 8px 8px;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 4px;
     align-items: center;
     color: var(--ink);
     font-weight: 600;
-    font-size: 17px;
-    border-radius: 20px;
+    font-size: 13px;
+    border-radius: 16px;
 }
 .nav-item.active { background: var(--purple); color: white; }
-
 
 .outline-pill { display: inline-flex; align-items: center; gap: 6px; }

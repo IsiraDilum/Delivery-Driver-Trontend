@@ -119,9 +119,8 @@ export function ModalView({
                             Ticket photo
                             <input />
                         </label>
-                        <p className="helper">Optional in demo. File name only; no upload.</p>
                         <button className="primary-button" onClick={close}>
-                            Save demo record
+                            Save record
                         </button>
                     </>
                 )}

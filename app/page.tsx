@@ -12,23 +12,25 @@ import {
   Route as RouteIcon,
 } from 'lucide-react'
 import { useModal } from '@/components/app-shell'
-import { formatClockParts, formatDistance } from '@/lib/maps/format'
+import { formatClockParts, formatDistance, formatLongDate, greeting } from '@/lib/maps/format'
 import { useRoute } from '@/lib/maps/use-route'
+import { useNow } from '@/lib/use-now'
 import { CURRENT_STOP_INDEX, PLANNED_ROUTE, ROUTE_ID, STOPS, TOTAL_PACKAGES } from '@/lib/route-data'
 
 const nextStop = STOPS[CURRENT_STOP_INDEX]
 
 export default function HomePage() {
   const setModal = useModal()
+  const now = useNow()
   const { route, fetchedAt } = useRoute(PLANNED_ROUTE)
   const nextLeg = route?.legs[CURRENT_STOP_INDEX]
   const eta = nextLeg ? formatClockParts(fetchedAt + nextLeg.durationSeconds * 1000) : null
 
   return (
       <main className="content home-page">
-        <p className="eyebrow">TUESDAY, 29 SEPTEMBER</p>
+        <p className="eyebrow">{now ? formatLongDate(now).toUpperCase() : '\u00A0'}</p>
         <h1>
-          Good morning, Ravi<span className="dot">.</span>
+          {now ? greeting(now) : 'Hello'}, Ravi<span className="dot">.</span>
         </h1>
         <p className="subhead">Let&apos;s make every stop count.</p>
 

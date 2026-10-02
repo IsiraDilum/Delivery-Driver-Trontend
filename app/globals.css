@@ -91,3 +91,104 @@ a.nav-item, a.primary-button { text-decoration: none; }
     .empty-state { padding: 24px 0 8px; }
     .sync-card { gap: 12px; }
 }
+
+
+.nav-page {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding-bottom: 120px; /* clears the bottom tab bar */
+}
+
+/* Top bar */
+.nav-topbar { display: flex; align-items: center; gap: 12px; }
+.nav-topbar h1 { flex: 1; margin: 0; font-size: 28px; line-height: 1.1; }
+.nav-back {
+    width: 44px; height: 44px; border-radius: 14px;
+    display: grid; place-items: center;
+    background: #fff; border: 1px solid #e5e7eb; color: inherit;
+}
+.nav-progress { font-size: 13px; font-weight: 700; color: #6b7280; }
+
+/* Map: normal flow, fixed height, clips its own children */
+.nav-page .nav-map {
+    position: relative;
+    height: 340px;
+    min-height: 340px;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+/* Turn instruction */
+.nav-turn {
+    position: absolute; top: 10px; left: 10px; right: 10px; z-index: 5;
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 12px; border-radius: 14px;
+    background: #fff; color: #111827;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, .12);
+}
+.nav-turn-icon {
+    flex: none; width: 42px; height: 42px; border-radius: 12px;
+    display: grid; place-items: center;
+    background: #6d3df0; color: #fff;
+}
+.nav-turn-text { display: flex; flex-direction: column; min-width: 0; }
+.nav-turn-text strong { font-size: 18px; line-height: 1.2; color: #111827; }
+.nav-turn-text span { font-size: 13px; color: #4b5563; }
+
+/* Overlays */
+.nav-demo {
+    position: absolute; left: 10px; bottom: 10px; z-index: 4;
+    font-size: 11px; padding: 4px 8px; border-radius: 8px;
+    background: rgba(255, 255, 255, .9); color: #4b5563;
+}
+.nav-emergency {
+    position: absolute; right: 10px; bottom: 10px; z-index: 5;
+    display: flex; align-items: center; gap: 8px;
+    min-height: 44px; padding: 0 16px; border-radius: 14px;
+    background: #fff; color: #c62828; font-weight: 700;
+    border: 1px solid #f3c1c1;
+    box-shadow: 0 4px 12px rgba(198, 40, 40, .18);
+}
+
+/* Stop 1 marker: adjust top/right to sit on the start of your route line */
+.nav-stop-one {
+    position: absolute; top: 30%; right: 20%; z-index: 3;
+    width: 34px; height: 34px; border-radius: 50%;
+    display: grid; place-items: center;
+    background: #6d3df0; color: #fff; font-weight: 700;
+    border: 3px solid #fff;
+}
+
+/* Stop card: normal flow, below the map */
+.nav-card {
+    position: static;
+    display: flex; flex-direction: column; gap: 12px;
+    padding: 16px; border-radius: 20px;
+    background: #fff; color: #111827;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, .08);
+}
+.nav-card-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.nav-card small { font-size: 13px; font-weight: 700; color: #6b7280; }
+.nav-card h2 { margin: 0 0 4px; font-size: 17px; font-weight: 700; }
+.nav-card p { margin: 0; font-size: 14px; color: #4b5563; }
+.nav-eta { text-align: right; }
+.nav-eta strong { display: block; font-size: 22px; }
+.nav-window {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 12px; border-radius: 12px;
+    background: #f1f3f2; font-size: 14px; font-weight: 600;
+}
+.nav-cta {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    min-height: 48px; border: 0; border-radius: 14px;
+    background: #6d3df0; color: #fff; font-size: 15px; font-weight: 700;
+}
+
+/* Dark mode: adjust to your theme tokens */
+:root[data-theme='dark'] .nav-card,
+:root[data-theme='dark'] .nav-turn,
+:root[data-theme='dark'] .nav-back,
+:root[data-theme='dark'] .nav-emergency { background: #1f2430; color: #f3f4f6; border-color: #2d3342; }
+:root[data-theme='dark'] .nav-turn-text strong { color: #f3f4f6; }
+:root[data-theme='dark'] .nav-window { background: #2a3040; }

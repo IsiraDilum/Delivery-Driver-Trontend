@@ -1,5 +1,4 @@
 'use client'
-
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import {
@@ -30,7 +29,7 @@ export default function DeliveryPage() {
     const [photo, setPhoto] = useState<{ url: string; name: string } | null>(null)
     const [photoError, setPhotoError] = useState('')
     const [completed, setCompleted] = useState(false)
-    const fileInput = useRef<HTMLInputElement>(null)
+
 
     const count = checked.filter(Boolean).length
     const total = packages.length
@@ -234,11 +233,12 @@ export default function DeliveryPage() {
                 )}
 
                 {/* Hidden file input: opens the gallery/camera picker */}
+                {/* File input: visually hidden but not display:none */}
                 <input
-                    ref={fileInput}
+                    id="handoff-photo"
                     type="file"
                     accept="image/*"
-                    hidden
+                    className="file-input"
                     onChange={handlePhoto}
                 />
 
@@ -247,9 +247,9 @@ export default function DeliveryPage() {
                         <img src={photo.url} alt="Handoff photo preview" />
                         <div className="photo-preview-info">
                             <b>{photo.name}</b>
-                            <button type="button" onClick={() => fileInput.current?.click()}>
+                            <label htmlFor="handoff-photo" className="photo-change">
                                 Change
-                            </button>
+                            </label>
                         </div>
                         <button
                             type="button"
@@ -261,16 +261,19 @@ export default function DeliveryPage() {
                         </button>
                     </div>
                 ) : (
-                    <button type="button" className="photo-row" onClick={() => fileInput.current?.click()}>
+                    <label htmlFor="handoff-photo" className="photo-row">
                         <Camera size={21} aria-hidden="true" />
                         <span>
-                            <b>Add handoff photo</b>
-                            <small>Optional · preview only, not uploaded</small>
-                        </span>
+            <b>Add handoff photo</b>
+            <small>Optional · preview only, not uploaded</small>
+        </span>
                         <Plus size={22} aria-hidden="true" />
-                    </button>
+                    </label>
                 )}
                 {photoError && <small className="field-error" role="alert">{photoError}</small>}
+
+
+
 
                 <button
                     type="button"

@@ -1,7 +1,17 @@
 'use client'
 
 import { useState } from 'react'
-import { Box, Camera, Check, ChevronRight, ClipboardList, Plus, ScanLine, Truck } from 'lucide-react'
+import {
+    Box,
+    Camera,
+    Check,
+    CheckCheck,
+    ChevronRight,
+    ClipboardList,
+    Plus,
+    QrCode,
+    Truck,
+} from 'lucide-react'
 import { useModal } from '@/components/app-shell'
 
 const packages = ['PKG-9040', 'PKG-9041', 'PKG-9042', 'PKG-9043', 'PKG-9044']
@@ -9,7 +19,9 @@ const packages = ['PKG-9040', 'PKG-9041', 'PKG-9042', 'PKG-9043', 'PKG-9044']
 export default function DeliveryPage() {
     const setModal = useModal()
     const [checked, setChecked] = useState([true, false, false, false, false])
+    const [receiver, setReceiver] = useState('')
     const count = checked.filter(Boolean).length
+    const canComplete = count > 0 && receiver.trim().length > 0
 
     return (
         <main className="content delivery-page">
@@ -39,7 +51,9 @@ export default function DeliveryPage() {
                         <h2>Package handoff</h2>
                         <p>Select each package as you hand it over.</p>
                     </div>
-                    <span className="step-pill">{count} / {packages.length}</span>
+                    <span className="step-pill">
+                        {count} / {packages.length}
+                    </span>
                 </div>
 
                 {packages.map((pkg, i) => (
@@ -48,7 +62,9 @@ export default function DeliveryPage() {
                         className="package-row"
                         key={pkg}
                         aria-pressed={checked[i]}
-                        onClick={() => setChecked((c) => c.map((v, j) => (j === i ? !v : v)))}
+                        onClick={() =>
+                            setChecked((c) => c.map((v, j) => (j === i ? !v : v)))
+                        }
                     >
                         <span className={checked[i] ? 'check-box checked' : 'check-box'}>
                             {checked[i] && <Check size={18} aria-hidden="true" />}
@@ -58,7 +74,9 @@ export default function DeliveryPage() {
                             <b>{pkg}</b>
                             <small>Fresh · Northgate Market</small>
                         </span>
-                        {checked[i] && <Check className="green-check" size={24} aria-hidden="true" />}
+                        {checked[i] && (
+                            <Check className="green-check" size={24} aria-hidden="true" />
+                        )}
                     </button>
                 ))}
 
@@ -67,7 +85,7 @@ export default function DeliveryPage() {
                     className="secondary-action select-all"
                     onClick={() => setChecked(packages.map(() => true))}
                 >
-                    Select all packages <Check size={18} aria-hidden="true" />
+                    Select all packages <CheckCheck size={18} aria-hidden="true" />
                 </button>
             </section>
 
@@ -76,7 +94,7 @@ export default function DeliveryPage() {
 
                 <div className="arrival-row">
                     <span className="arrival-icon">
-                        <Check size={20} aria-hidden="true" />
+                        <Check size={24} aria-hidden="true" />
                     </span>
                     <div>
                         <b>Arrival recorded</b>
@@ -84,9 +102,13 @@ export default function DeliveryPage() {
                     </div>
                 </div>
 
-                <button type="button" className="verify-row" onClick={() => setModal('verify')}>
+                <button
+                    type="button"
+                    className="verify-row"
+                    onClick={() => setModal('verify')}
+                >
                     <span className="qr-icon">
-                        <ScanLine size={20} aria-hidden="true" />
+                        <QrCode size={24} aria-hidden="true" />
                     </span>
                     <span>
                         <b>Verify store QR</b>
@@ -97,7 +119,12 @@ export default function DeliveryPage() {
 
                 <label>
                     Receiver’s name
-                    <input placeholder="e.g. Anoma Perera" autoComplete="off" />
+                    <input
+                        placeholder="e.g. Anoma Perera"
+                        autoComplete="off"
+                        value={receiver}
+                        onChange={(e) => setReceiver(e.target.value)}
+                    />
                 </label>
 
                 <label>
@@ -118,13 +145,23 @@ export default function DeliveryPage() {
                     <Plus size={22} aria-hidden="true" />
                 </button>
 
-                <button type="button" className="complete-button">
-                    <Check size={20} aria-hidden="true" /> Complete delivery
+                <button
+                    type="button"
+                    className="complete-button"
+                    disabled={!canComplete}
+                >
+                    <CheckCheck size={20} aria-hidden="true" /> Complete delivery
                 </button>
-                <p className="helper center">Verify the store and record the handoff first.</p>
+                <p className="helper center">
+                    Verify the store and record the handoff first.
+                </p>
             </section>
 
-            <button type="button" className="parking-link" onClick={() => setModal('fine')}>
+            <button
+                type="button"
+                className="parking-link"
+                onClick={() => setModal('fine')}
+            >
                 <ClipboardList size={20} aria-hidden="true" /> Report a parking fine{' '}
                 <ChevronRight size={20} aria-hidden="true" />
             </button>

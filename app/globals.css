@@ -374,3 +374,78 @@ a.nav-item, a.primary-button { text-decoration: none; }
 :root[data-theme='dark'] .nav-turn-text span,
 :root[data-theme='dark'] .nav-card p { color: #aab1c0; }
 :root[data-theme='dark'] .nav-window { background: #2a3040; }
+
+
+:root {
+    --bg: #f4f0ff;
+    --brand: #6d35e0;
+    --surface: #ffffff;
+    --border: #e5e0ef;
+    --avatar-bg: #e0d6fa;
+    --text: #1a1a1a;
+}
+
+[data-theme='dark'] {
+    --bg: #14111d;
+    --brand: #a98bff;
+    --surface: #221d30;
+    --border: #3a3350;
+    --avatar-bg: #3a3350;
+    --text: #f2f0f7;
+}
+
+.topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 24px;
+    background: var(--bg);
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    object-fit: cover;
+}
+
+.brand-name {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--brand);
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.icon-button {
+    width: 44px;
+    height: 44px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    cursor: pointer;
+}
+
+.avatar {
+    width: 44px;
+    height: 44px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--avatar-bg);
+    color: var(--brand);
+    font-weight: 600;
+}

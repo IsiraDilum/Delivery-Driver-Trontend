@@ -3,14 +3,14 @@
 import Link from 'next/link'
 import { ArrowRight, BellRing, MapPin, SlidersHorizontal } from 'lucide-react'
 import { useModal } from '@/components/app-shell'
-
-const stops = [
-    ['Northgate Market', '5 packages · 6:30–8:00 AM', 'Rear loading bay · enter from Station Road'],
-    ['Riverside Grocer', '4 packages · 6:00–8:00 AM', 'Curbside unloading · contact receiver on arrival'],
-]
+import { RouteMap } from '@/components/maps/route-map'
+import { formatDistance, formatDuration } from '@/lib/maps/format'
+import { useRoute } from '@/lib/maps/use-route'
+import { CURRENT_STOP_INDEX, DEPOT, PLANNED_ROUTE, STOPS } from '@/lib/route-data'
 
 export default function RoutePage() {
     const setModal = useModal()
+    const { route, error } = useRoute(PLANNED_ROUTE)
 
     return (
         <main className="content route-page">
@@ -35,21 +35,24 @@ export default function RoutePage() {
                         View route <ArrowRight size={24} />
                     </Link>
                 </div>
-                <div className="map">
-                    <div className="river"></div>
-                    <div className="roads"></div>
-                    <div className="route-line"></div>
-                    <span className="map-point p1">1</span>
-                    <span className="map-point p2">2</span>
-                    <span className="map-point p3">3</span>
-                    <span className="map-label">Illustrative map · demo route</span>
+                <div className="map" aria-label={`Route map with ${STOPS.length} stops`}>
+                    <RouteMap
+                        route={route}
+                        stops={STOPS}
+                        activeIndex={CURRENT_STOP_INDEX}
+                        depot={DEPOT.location}
+                        status={error ?? (route ? null : 'Loading route…')}
+                    />
                 </div>
                 <div className="map-footer">
           <span>
             <MapPin size={24} />
-            Peliyagoda depot
+              {DEPOT.name}
           </span>
-                    <b>4 stops · 3 brands</b>
+                    <b>
+                        {STOPS.length} stops
+                        {route && ` · ${formatDistance(route.distanceMeters)} · ${formatDuration(route.durationSeconds)}`}
+                    </b>
                 </div>
             </section>
 
@@ -58,16 +61,22 @@ export default function RoutePage() {
                     <h2>Stop sequence</h2>
                     <SlidersHorizontal size={26} />
                 </div>
-                {stops.map((s, i) => (
-                    <div className="sequence-row" key={s[0]}>
-                        <span className={i === 0 ? 'number active' : 'number'}>{i + 1}</span>
-                        <div>
-                            <h3>{s[0]}</h3>
-                            <p>{s[1]}</p>
-                            <p>{s[2]}</p>
+                {STOPS.map((s, i) => {
+                    const leg = route?.legs[i]
+                    return (
+                        <div className="sequence-row" key={s.id}>
+                            <span className={i === CURRENT_STOP_INDEX ? 'number active' : 'number'}>{i + 1}</span>
+                            <div>
+                                <h3>{s.name}</h3>
+                                <p>
+                                    {s.packages} packages · {s.window}
+                                    {leg && ` · ${formatDistance(leg.distanceMeters)}, ${formatDuration(leg.durationSeconds)} drive`}
+                                </p>
+                                <p>{s.instructions}</p>
+                            </div>
                         </div>
-                    </div>
-                ))}
+                    )
+                })}
             </section>
         </main>
     )

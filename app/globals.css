@@ -42,7 +42,7 @@ html { background: #101410; }
 body {
     margin: 0;
     min-width: 0;
-    overflow-x: hidden;
+    overflow-x: clip;
     background: #101410;
     color: var(--ink);
     /* --font-app is set in layout.tsx (next/font). Falls back to system fonts. */
@@ -62,8 +62,26 @@ a { color: inherit; }
 /* =========================================================
    APP SHELL (header + bottom nav container)
    ========================================================= */
-.app-shell { width: 100%; max-width: 920px; min-height: 100vh; margin: 0 auto; background: var(--surface); overflow-x: hidden; padding-bottom: calc(104px + env(safe-area-inset-bottom)); }
-.topbar { display: flex; align-items: center; justify-content: space-between; padding: 16px clamp(20px, 6vw, 80px); background: var(--topbar); border-bottom: 1px solid var(--line); }
+.app-shell {
+    width: 100%;
+    max-width: 920px;
+    min-height: 100vh;
+    margin: 0 auto;
+    background: var(--surface);
+    overflow-x: clip;               /* was: hidden */
+    padding-bottom: calc(104px + env(safe-area-inset-bottom));
+}
+.topbar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px clamp(20px, 6vw, 80px);
+    background: var(--topbar);
+    border-bottom: 1px solid var(--line);
+}
 .brand { display: flex; align-items: center; gap: 12px; }
 .logo { width: 40px; height: 40px; border-radius: 10px; object-fit: cover; }
 .brand-name { font-size: 24px; font-weight: 700; color: var(--purple-ink); }

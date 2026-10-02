@@ -26,10 +26,12 @@ export default function HomePage() {
 
         <section className="route-card purple-card">
           <div className="card-row">
-          <span>
-            <RouteIcon size={20} /> TODAY&apos;S ROUTE
-          </span>
-            <span className="outline-pill">Ready to go</span>
+  <span>
+    <RouteIcon size={20} /> TODAY&apos;S ROUTE
+  </span>
+            <Link href="/route/map" className="outline-pill">
+              Ready to go
+            </Link>
           </div>
           <div className="route-id">
             LP-6387 <small>Peliyagoda → Colombo</small>

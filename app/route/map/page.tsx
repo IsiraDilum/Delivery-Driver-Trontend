@@ -35,7 +35,6 @@ import { useGeolocation } from '@/lib/maps/use-geolocation'
 import { useRoute } from '@/lib/maps/use-route'
 import { speak, spokenDistance, stopSpeaking } from '@/lib/maps/voice'
 import { CURRENT_STOP_INDEX, DEPOT, STOPS } from '@/lib/route-data'
-import { useMediaQuery } from '@/lib/use-media-query'
 import { useWakeLock } from '@/lib/use-wake-lock'
 
 // Before navigation starts, refresh the preview route after the driver has moved this far
@@ -78,8 +77,6 @@ export default function RouteMapPage() {
     const [navigating, setNavigating] = useState(false)
     const [following, setFollowing] = useState(true)
     const [muted, setMuted] = useState(false)
-    // Same breakpoint as the CSS that enlarges the overlays
-    const wide = useMediaQuery('(min-width: 600px) and (min-height: 760px)')
     useWakeLock(navigating)
 
     // Where the current route was calculated from. The depot is used until (or unless) GPS is available.
@@ -238,11 +235,7 @@ export default function RouteMapPage() {
                     driver={geo.position}
                     fitPoints={[geo.position ?? DEPOT.location, stop.location]}
                     fitKey={`${stop.id}:${geo.position ? 'gps' : 'depot'}`}
-                    padding={
-                        wide
-                            ? { top: 230, right: 64, bottom: 110, left: 64 }
-                            : { top: 160, right: 44, bottom: 80, left: 44 }
-                    }
+                    padding={{ top: 160, right: 44, bottom: 80, left: 44 }}
                     interactive
                     camera={navigating && geo.position ? (following ? 'follow' : 'free') : 'fit'}
                     onUserPan={navigating ? pauseFollowing : undefined}
